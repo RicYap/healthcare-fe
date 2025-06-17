@@ -1,43 +1,50 @@
-import React, { useEffect, useState } from 'react'
-import { createClient } from '../api/client'
-import { useAuth } from '../context/AuthContext'
-import { Link } from 'react-router-dom'
-import LabChart from '../components/Charts/HealthChart'
+import { useCallback, useEffect, useState } from "react";
+import { useAuth } from "../context/AuthContext";
+import { Link } from "react-router-dom";
+import LabChart from "../components/Charts/HealthChart";
+import { debounce } from "lodash";
+import api from "../api/lab";
 
 type LabResult = {
-  id: string
-  date: string
+  id: string;
+  date: string;
   results: {
-    glucose?: number
+    glucose?: number;
     cholesterol?: {
-      total?: number
-      ldl?: number
-      hdl?: number
-    }
+      total?: number;
+      ldl?: number;
+      hdl?: number;
+    };
     bloodPressure?: {
-      systolic?: number
-      diastolic?: number
-    }
-  }
-}
+      systolic?: number;
+      diastolic?: number;
+    };
+  };
+};
 
 export default function Dashboard() {
-  const { apiKey } = useAuth()
-  const [labResults, setLabResults] = useState<LabResult[]>([])
-  const [loading, setLoading] = useState(false)
+  const { apiKey } = useAuth();
+  const [labResults, setLabResults] = useState<LabResult[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  async function getLabResult(apiKey: string | null) {
+    try {
+      const res = await api.getLabResult(apiKey);
+      console.log("res", res);
+      
+      setLabResults(res.data);
+    } catch (error) {
+      alert("Failed to load lab results");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const debounceGetLabResult = useCallback(debounce(getLabResult, 400), []);
 
   useEffect(() => {
-    if (!apiKey) return
-    const client = createClient(apiKey)
-    setLoading(true)
-    client
-      .get('/lab-results')
-      .then((res) => {
-        setLabResults(res.data)
-      })
-      .catch(() => alert('Failed to load lab results'))
-      .finally(() => setLoading(false))
-  }, [apiKey])
+    debounceGetLabResult(apiKey);
+  }, []);
 
   return (
     <div className="p-6 max-w-4xl mx-auto">
@@ -56,5 +63,5 @@ export default function Dashboard() {
 
       {labResults.length > 0 && <LabChart labResults={labResults} />}
     </div>
-  )
+  );
 }
