@@ -1,24 +1,49 @@
 import axios from "axios";
 
-const BASE_URL = import.meta.env.VITE_BASE_URL;
-
+interface LabResult {
+  user_id: string;
+  date: string;
+  glucose: number;
+  cholesterol_total: number;
+  ldl: number;
+  hdl: number;
+  systolic: number;
+  diastolic: number;
+}
+// Create Axios instance
 const api = axios.create({
-  baseURL: BASE_URL,
-  timeout: 120000,
+  baseURL: import.meta.env.VITE_BASE_URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
-const getLabResult = async (apiKey: string | null) => {
-  console.log(apiKey);
+// Add request interceptor to include api key
+api.interceptors.request.use(
+  (config) => {
+    const apiKey = localStorage.getItem("apiKey");
+    if (apiKey && config.headers && typeof config.headers.set === "function") {
+      config.headers.set("Authorization", `Bearer ${apiKey}`);
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
-  return await api.get(`/lab-results`, {
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      'Accept': 'application/json',           // Add this line
-      'Content-Type': 'application/json',  
-    },
-  });
+const getLabResult = async () => {
+  return await api.get(`/lab-results`);
+};
+
+const addLabResult = async (data: LabResult) => {
+  return await api.post(`/lab-results`, data);
+};
+
+const getUserProfile = async (userId: string) => {
+  return await api.get(`/user/profile?userId=${userId}`);
 };
 
 export default {
   getLabResult,
+  addLabResult,
+  getUserProfile,
 };

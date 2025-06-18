@@ -6,6 +6,7 @@ import Signup from "./pages/Signup";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import AddResult from "./pages/AddResult";
+import ProfilePage from "./pages/Profile";
 
 const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
   const { apiKey } = useAuth();
@@ -33,6 +34,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <AddResult />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/user/profile"
+            element={
+              <ProtectedRoute>
+                <ProfilePage />
               </ProtectedRoute>
             }
           />

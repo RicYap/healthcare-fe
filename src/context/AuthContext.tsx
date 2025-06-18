@@ -1,27 +1,54 @@
-import { createContext, useState, useContext } from 'react'
-import type { ReactNode } from 'react'
+import { createContext, useContext, useState, useEffect } from "react";
+import type { ReactNode } from "react";
 
-type AuthContextType = {
-  apiKey: string | null
-  setApiKey: (key: string | null) => void
+interface AuthContextType {
+  apiKey: string | null;
+  setApiKey: (key: string | null) => void;
+  login: (key: string) => void;
+  logout: () => void;
+  isAuthenticated: boolean;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined)
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [apiKey, setApiKey] = useState<string | null>(() => localStorage.getItem('apiKey'))
+  const [apiKey, setApiKey] = useState<string | null>(() => {
+    // Load from localStorage if present
+    return localStorage.getItem("apiKey");
+  });
 
-  const updateKey = (key: string | null) => {
-    if (key) localStorage.setItem('apiKey', key)
-    else localStorage.removeItem('apiKey')
-    setApiKey(key)
+  // Keep localStorage in sync with apiKey state
+  useEffect(() => {
+    if (apiKey) {
+      localStorage.setItem("apiKey", apiKey);
+    } else {
+      localStorage.removeItem("apiKey");
+    }
+  }, [apiKey]);
+
+  const login = (key: string) => {
+    setApiKey(key);
+  };
+
+  const logout = () => {
+    setApiKey(null);
+  };
+
+  const isAuthenticated = !!apiKey;
+
+  return (
+    <AuthContext.Provider
+      value={{ apiKey, setApiKey, login, logout, isAuthenticated }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+export const useAuth = (): AuthContextType => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
   }
-
-  return <AuthContext.Provider value={{ apiKey, setApiKey: updateKey }}>{children}</AuthContext.Provider>
-}
-
-export const useAuth = () => {
-  const context = useContext(AuthContext)
-  if (!context) throw new Error('useAuth must be used within AuthProvider')
-  return context
-}
+  return context;
+};

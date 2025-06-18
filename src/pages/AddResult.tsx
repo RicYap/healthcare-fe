@@ -1,108 +1,169 @@
-import React, { useState } from 'react'
-import { useAuth } from '../context/AuthContext'
-import { createClient } from '../api/client'
-import { useNavigate } from 'react-router-dom'
+import { useCallback, useState } from "react";
+import api from "../api/lab";
+import { useNavigate, Link } from "react-router-dom";
+import { debounce } from "lodash";
+
+interface LabResult {
+  user_id: string;
+  date: string;
+  glucose: number;
+  cholesterol_total: number;
+  ldl: number;
+  hdl: number;
+  systolic: number;
+  diastolic: number;
+}
 
 export default function AddResult() {
-  const { apiKey } = useAuth()
-  const navigate = useNavigate()
+  const [date, setDate] = useState("");
+  const [glucose, setGlucose] = useState("");
+  const [cholesterolTotal, setCholesterolTotal] = useState("");
+  const [cholesterolLDL, setCholesterolLDL] = useState("");
+  const [cholesterolHDL, setCholesterolHDL] = useState("");
+  const [bpSystolic, setBpSystolic] = useState("");
+  const [bpDiastolic, setBpDiastolic] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-  const [date, setDate] = useState('')
-  const [glucose, setGlucose] = useState<number | ''>('')
-  const [cholesterolTotal, setCholesterolTotal] = useState<number | ''>('')
-  const [ldl, setLDL] = useState<number | ''>('')
-  const [hdl, setHDL] = useState<number | ''>('')
-  const [systolic, setSystolic] = useState<number | ''>('')
-  const [diastolic, setDiastolic] = useState<number | ''>('')
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!apiKey) return
-
-    const client = createClient(apiKey)
-
-    const payload = {
-      date,
-      results: {
-        glucose: glucose === '' ? undefined : glucose,
-        cholesterol: {
-          total: cholesterolTotal === '' ? undefined : cholesterolTotal,
-          ldl: ldl === '' ? undefined : ldl,
-          hdl: hdl === '' ? undefined : hdl,
-        },
-        bloodPressure: {
-          systolic: systolic === '' ? undefined : systolic,
-          diastolic: diastolic === '' ? undefined : diastolic,
-        },
-      },
-    }
-
+  async function addLabResults(data: LabResult) {
     try {
-      await client.post('/lab-results', payload)
-      navigate('/dashboard')
-    } catch {
-      alert('Failed to add result')
+      await api.addLabResult(data);
+
+      navigate("/dashboard");
+    } catch (error) {
+      setError("Failed to add lab result.");
     }
   }
 
+  const debounceAddLabResults = useCallback(debounce(addLabResults, 400), []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+
+    if (!date) {
+      setError("Please select a date");
+      return;
+    }
+
+    const dateObj = new Date(date); // date is "YYYY-MM-DD"
+    const formattedDate = dateObj.toISOString(); // RFC3339 format
+
+    // const labInput: LabResult = {
+    //   user_id: "35616318-84ee-4c3d-b61a-38743369c999",
+    //   date: formattedDate,
+    //   glucose: parseFloat(glucose),
+    //   cholesterol_total: parseFloat(cholesterolTotal),
+    //   ldl: parseFloat(cholesterolLDL),
+    //   hdl: parseFloat(cholesterolHDL),
+    //   systolic: Number(bpSystolic),
+    //   diastolic: Number(bpDiastolic),
+    // };
+
+    const labInput: LabResult = {
+      user_id: "35616318-84ee-4c3d-b61a-38743369c999",
+      date: formattedDate,
+      glucose: parseFloat("98"),
+      cholesterol_total: parseFloat("178"),
+      ldl: parseFloat("110"),
+      hdl: parseFloat("52"),
+      systolic: Number(122),
+      diastolic: Number(78),
+    };
+
+    debounceAddLabResults(labInput);
+  };
+
   return (
-    <form onSubmit={handleSubmit} className="max-w-lg mx-auto p-6">
-      <h2 className="text-2xl mb-6 font-bold">Add Lab Result</h2>
-      <input
-        type="date"
-        required
-        value={date}
-        onChange={(e) => setDate(e.target.value)}
-        className="block w-full mb-4 p-2 border rounded"
-      />
-      <input
-        type="number"
-        placeholder="Glucose (mg/dL)"
-        value={glucose}
-        onChange={(e) => setGlucose(e.target.value === '' ? '' : +e.target.value)}
-        className="block w-full mb-4 p-2 border rounded"
-      />
-      <input
-        type="number"
-        placeholder="Cholesterol Total (mg/dL)"
-        value={cholesterolTotal}
-        onChange={(e) => setCholesterolTotal(e.target.value === '' ? '' : +e.target.value)}
-        className="block w-full mb-4 p-2 border rounded"
-      />
-      <input
-        type="number"
-        placeholder="LDL (mg/dL)"
-        value={ldl}
-        onChange={(e) => setLDL(e.target.value === '' ? '' : +e.target.value)}
-        className="block w-full mb-4 p-2 border rounded"
-      />
-      <input
-        type="number"
-        placeholder="HDL (mg/dL)"
-        value={hdl}
-        onChange={(e) => setHDL(e.target.value === '' ? '' : +e.target.value)}
-        className="block w-full mb-4 p-2 border rounded"
-      />
-      <input
-        type="number"
-        placeholder="Systolic BP (mmHg)"
-        value={systolic}
-        onChange={(e) => setSystolic(e.target.value === '' ? '' : +e.target.value)}
-        className="block w-full mb-4 p-2 border rounded"
-      />
-      <input
-        type="number"
-        placeholder="Diastolic BP (mmHg)"
-        value={diastolic}
-        onChange={(e) => setDiastolic(e.target.value === '' ? '' : +e.target.value)}
-        className="block w-full mb-4 p-2 border rounded"
-      />
-      <button
-        type="submit"
-        className="bg-purple-600 text-white py-2 px-4 rounded hover:bg-purple-700"
-      >
-        Add Result
-      </button>
-    </form>
-  )
+    <div className="max-w-md mx-auto mt-20 p-6 border rounded shadow">
+      <h1 className="text-2xl mb-6 font-semibold">Add Lab Result</h1>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {error && <p className="text-red-600">{error}</p>}
+        <label className="block">
+          Date:
+          <input
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+            required
+            className="input input-bordered w-full"
+          />
+        </label>
+        <label className="block">
+          Blood Sugar (Glucose) mg/dL:
+          <input
+            type="number"
+            value={glucose}
+            onChange={(e) => setGlucose(e.target.value)}
+            required
+            className="input input-bordered w-full"
+            min={0}
+          />
+        </label>
+        <label className="block">
+          Cholesterol Total mg/dL:
+          <input
+            type="number"
+            value={cholesterolTotal}
+            onChange={(e) => setCholesterolTotal(e.target.value)}
+            required
+            className="input input-bordered w-full"
+            min={0}
+          />
+        </label>
+        <label className="block">
+          Cholesterol LDL mg/dL:
+          <input
+            type="number"
+            value={cholesterolLDL}
+            onChange={(e) => setCholesterolLDL(e.target.value)}
+            required
+            className="input input-bordered w-full"
+            min={0}
+          />
+        </label>
+        <label className="block">
+          Cholesterol HDL mg/dL:
+          <input
+            type="number"
+            value={cholesterolHDL}
+            onChange={(e) => setCholesterolHDL(e.target.value)}
+            required
+            className="input input-bordered w-full"
+            min={0}
+          />
+        </label>
+        <label className="block">
+          Blood Pressure Systolic mmHg:
+          <input
+            type="number"
+            value={bpSystolic}
+            onChange={(e) => setBpSystolic(e.target.value)}
+            required
+            className="input input-bordered w-full"
+            min={0}
+          />
+        </label>
+        <label className="block">
+          Blood Pressure Diastolic mmHg:
+          <input
+            type="number"
+            value={bpDiastolic}
+            onChange={(e) => setBpDiastolic(e.target.value)}
+            required
+            className="input input-bordered w-full"
+            min={0}
+          />
+        </label>
+        <button type="submit" className="btn btn-primary w-full">
+          Add Result
+        </button>
+      </form>
+      <div className="mt-4">
+        <Link to="/dashboard" className="text-blue-600 underline">
+          Back to Dashboard
+        </Link>
+      </div>
+    </div>
+  );
 }
