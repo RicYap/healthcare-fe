@@ -72,20 +72,6 @@ export default function Dashboard() {
     <div className="max-w-5xl mx-auto p-6">
       <header className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Lab Results Dashboard</h1>
-        <div className="space-x-4">
-          <Link to="/add" className="btn btn-primary">
-            Add Result
-          </Link>
-          <button
-            onClick={() => {
-              logout();
-              navigate("/login");
-            }}
-            className="btn btn-secondary"
-          >
-            Logout
-          </button>
-        </div>
       </header>
 
       {loading ? (

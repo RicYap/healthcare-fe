@@ -8,6 +8,17 @@ import Dashboard from "./pages/Dashboard";
 import AddResult from "./pages/AddResult";
 import ProfilePage from "./pages/Profile";
 
+import Navbar from "../src/components/NavBar";
+
+const AppLayout = ({ children }: { children: JSX.Element }) => {
+  return (
+   <div className="flex flex-col min-h-screen">
+      <Navbar />
+      <main className="flex-1 px-4 py-6">{children}</main>
+    </div>
+  );
+};
+
 const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
   const { apiKey } = useAuth();
   if (!apiKey) return <Navigate to="/login" />;
@@ -25,7 +36,9 @@ function App() {
             path="/dashboard"
             element={
               <ProtectedRoute>
-                <Dashboard />
+                <AppLayout>
+                  <Dashboard />
+                </AppLayout>
               </ProtectedRoute>
             }
           />
@@ -33,7 +46,9 @@ function App() {
             path="/add-result"
             element={
               <ProtectedRoute>
-                <AddResult />
+                <AppLayout>
+                  <AddResult />
+                </AppLayout>
               </ProtectedRoute>
             }
           />
@@ -41,7 +56,9 @@ function App() {
             path="/user/profile"
             element={
               <ProtectedRoute>
-                <ProfilePage />
+                <AppLayout>
+                  <ProfilePage />
+                </AppLayout>
               </ProtectedRoute>
             }
           />
