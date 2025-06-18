@@ -1,43 +1,77 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import "../index.css";
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const apiKey = localStorage.getItem("apiKey"); // or sessionStorage
-
+  const [open, setOpen] = useState(false);
   const handleLogout = () => {
     localStorage.removeItem("apiKey");
     navigate("/signin");
   };
 
+  type HamburgerButtonProps = {
+    onClick: React.MouseEventHandler<HTMLButtonElement>;
+  };
+
+  function HamburgerButton({ onClick }: HamburgerButtonProps) {
+    return (
+      <button
+        onClick={onClick}
+        className="flex flex-col justify-center items-center w-8 h-8 space-y-1.5"
+        aria-label="Toggle menu"
+      >
+        {/* 3 bars */}
+        <span className="block w-8 h-0.5 bg-gray-800 dark:bg-white rounded"></span>
+        <span className="block w-8 h-0.5 bg-gray-800 dark:bg-white rounded"></span>
+        <span className="block w-8 h-0.5 bg-gray-800 dark:bg-white rounded"></span>
+      </button>
+    );
+  }
+
   return (
-    <nav className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
+    <nav className="relative bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16 items-center">
-          <div className="flex items-center gap-6">
+        <div className="flex items-center">
+          <div className="flex flex-2 items-center gap-6">
             <Link
               to="/"
-              className="text-lg font-semibold text-white-600 dark:text-white-400"
+              className="text-lg font-semibold !text-white dark:!text-white/70"
             >
-              Health Care
+              <span className="text-white text-lg font-semibold">
+                Health Care
+              </span>
             </Link>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex flex-1 items-center gap-4">
             {apiKey && (
               <>
-                <Link
-                  to="/dashboard"
-                  className="text-sm text-gray-700 dark:text-gray-300 hover:underline"
-                >
-                  Dashboard
-                </Link>
-                <Link
-                  to="/add"
-                  className="text-sm text-gray-700 dark:text-gray-300 hover:underline"
-                >
-                  Add Result
-                </Link>
+                <div className="flex flex-1">
+                  <Link
+                    to="/dashboard"
+                    className="text-sm text-gray-700 dark:text-gray-300 hover:underline"
+                  >
+                    Dashboard
+                  </Link>
+                </div>
+                <div className="flex flex-1">
+                  <Link
+                    to="/add"
+                    className="text-sm text-gray-700 dark:text-gray-300 hover:underline"
+                  >
+                    Add Result
+                  </Link>
+                </div>
+                <div className="flex flex-1">
+                  <Link
+                    to="/add"
+                    className="text-sm text-gray-700 dark:text-gray-300 hover:underline"
+                  >
+                    Profile
+                  </Link>
+                </div>
               </>
             )}
             {!apiKey ? (
@@ -56,12 +90,29 @@ const Navbar: React.FC = () => {
                 </Link>
               </>
             ) : (
-              <button
-                onClick={handleLogout}
-                className="text-sm bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition"
-              >
-                Logout
-              </button>
+              <div className="relative">
+                <HamburgerButton onClick={() => setOpen(!open)} />
+                {open && (
+                  <ul className="absolute top-full left-1 m-0 w-32 p-0 h-32 bg-red-500 text-white rounded shadow-lg z-50 flex flex-col justify-center items-center">
+                    <li>
+                      <a
+                        href="/"
+                        className="block px-4 py-2 hover:bg-red-600 rounded"
+                      >
+                        Home
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        href="/about"
+                        className="block px-4 py-2 hover:bg-red-600 rounded"
+                      >
+                        About
+                      </a>
+                    </li>
+                  </ul>
+                )}
+              </div>
             )}
           </div>
         </div>
