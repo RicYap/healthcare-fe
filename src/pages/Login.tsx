@@ -1,7 +1,8 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React, { useCallback, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { debounce } from "lodash";
+import api from "../api/auth";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -10,19 +11,21 @@ export default function Login() {
   const { setApiKey } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  async function signIn(email: string, password: string) {
     try {
-      const res = await axios.post("http://localhost:8080/auth/signin", {
-        email,
-        password,
-      });
-
+      const res = await api.signIn(email, password);
       setApiKey(res.data.token);
       navigate("/dashboard");
-    } catch (err) {
+    } catch (error) {
       alert("Login failed");
     }
+  }
+
+  const debounceSignIn = useCallback(debounce(signIn, 400), []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    debounceSignIn(email, password);
   };
 
   return (

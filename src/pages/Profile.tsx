@@ -1,6 +1,6 @@
 // pages/ProfilePage.tsx
 import { useCallback, useEffect, useState } from "react";
-import api from "../api/lab";
+import api from "../api/user";
 import { debounce } from "lodash";
 
 interface UserProfile {

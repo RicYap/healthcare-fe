@@ -2,17 +2,7 @@ import { useCallback, useState } from "react";
 import api from "../api/lab";
 import { useNavigate, Link } from "react-router-dom";
 import { debounce } from "lodash";
-
-interface LabResult {
-  user_id: string;
-  date: string;
-  glucose: number;
-  cholesterol_total: number;
-  ldl: number;
-  hdl: number;
-  systolic: number;
-  diastolic: number;
-}
+import type { LabResult } from "../types/lab";
 
 export default function AddResult() {
   const [date, setDate] = useState("");
@@ -45,30 +35,25 @@ export default function AddResult() {
       setError("Please select a date");
       return;
     }
-
-    const dateObj = new Date(date); // date is "YYYY-MM-DD"
-    const formattedDate = dateObj.toISOString(); // RFC3339 format
-
-    // const labInput: LabResult = {
-    //   user_id: "35616318-84ee-4c3d-b61a-38743369c999",
-    //   date: formattedDate,
-    //   glucose: parseFloat(glucose),
-    //   cholesterol_total: parseFloat(cholesterolTotal),
-    //   ldl: parseFloat(cholesterolLDL),
-    //   hdl: parseFloat(cholesterolHDL),
-    //   systolic: Number(bpSystolic),
-    //   diastolic: Number(bpDiastolic),
-    // };
+    const dateObj = new Date(date); 
+    const formattedDate = dateObj.toISOString(); 
 
     const labInput: LabResult = {
-      user_id: "35616318-84ee-4c3d-b61a-38743369c999",
+      id: "",
+      userId: "35616318-84ee-4c3d-b61a-38743369c999",
       date: formattedDate,
-      glucose: parseFloat("98"),
-      cholesterol_total: parseFloat("178"),
-      ldl: parseFloat("110"),
-      hdl: parseFloat("52"),
-      systolic: Number(122),
-      diastolic: Number(78),
+      results: {
+        glucose: parseFloat("98"),
+        cholesterol: {
+          total: parseFloat("178"),
+          ldl: parseFloat("110"),
+          hdl: parseFloat("52"),
+        },
+        bloodPressure: {
+          systolic: parseFloat("122"),
+          diastolic: parseFloat("78"),
+        },
+      },
     };
 
     debounceAddLabResults(labInput);

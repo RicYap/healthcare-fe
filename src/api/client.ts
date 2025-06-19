@@ -1,9 +1,23 @@
 import axios from "axios";
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+// Create Axios instance
+const api = axios.create({
+  baseURL: import.meta.env.VITE_BASE_URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
 
-export const createClient = (apiKey: string | null) =>
-  axios.create({
-    baseURL: BASE_URL,
-    headers: apiKey ? { Authorization: `Bearer ${apiKey}` } : {},
-  });
+// Add request interceptor to include api key
+api.interceptors.request.use(
+  (config) => {
+    const apiKey = localStorage.getItem("apiKey");
+    if (apiKey && config.headers && typeof config.headers.set === "function") {
+      config.headers.set("Authorization", `Bearer ${apiKey}`);
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+export default api;
