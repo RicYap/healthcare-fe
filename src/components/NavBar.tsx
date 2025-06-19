@@ -22,19 +22,19 @@ const Navbar: React.FC = () => {
         className="flex flex-col justify-center items-center w-8 h-8 space-y-1.5"
         aria-label="Toggle menu"
       >
-        {/* 3 bars */}
+        {/* <span className="block w-8 h-0.5 bg-gray-800 dark:bg-white rounded"></span>
         <span className="block w-8 h-0.5 bg-gray-800 dark:bg-white rounded"></span>
-        <span className="block w-8 h-0.5 bg-gray-800 dark:bg-white rounded"></span>
-        <span className="block w-8 h-0.5 bg-gray-800 dark:bg-white rounded"></span>
+        <span className="block w-8 h-0.5 bg-gray-800 dark:bg-white rounded"></span> */}
+        <img src="/images/profileIcon.jpg" className="w-8"></img>
       </button>
     );
   }
 
   return (
-    <nav className="relative bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav className="sticky top-0 z-50 bg-white dark:bg-blue-950 border-b border-gray-200 dark:border-gray-700">
+      <div>
         <div className="flex items-center">
-          <div className="flex flex-2 items-center gap-6">
+          <div className="flex flex-1 items-center gap-6">
             <Link
               to="/"
               className="text-lg font-semibold !text-white dark:!text-white/70"
@@ -48,7 +48,7 @@ const Navbar: React.FC = () => {
           <div className="flex flex-1 items-center gap-4">
             {apiKey && (
               <>
-                <div className="flex flex-1">
+                <div className="flex flex-1 justify-end">
                   <Link
                     to="/dashboard"
                     className="text-sm text-gray-700 dark:text-gray-300 hover:underline"
@@ -56,7 +56,7 @@ const Navbar: React.FC = () => {
                     Dashboard
                   </Link>
                 </div>
-                <div className="flex flex-1">
+                <div className="flex flex-1 justify-end">
                   <Link
                     to="/add"
                     className="text-sm text-gray-700 dark:text-gray-300 hover:underline"
@@ -64,14 +64,14 @@ const Navbar: React.FC = () => {
                     Add Result
                   </Link>
                 </div>
-                <div className="flex flex-1">
+                {/* <div className="flex flex-1">
                   <Link
                     to="/add"
                     className="text-sm text-gray-700 dark:text-gray-300 hover:underline"
                   >
                     Profile
                   </Link>
-                </div>
+                </div> */}
               </>
             )}
             {!apiKey ? (
@@ -90,10 +90,10 @@ const Navbar: React.FC = () => {
                 </Link>
               </>
             ) : (
-              <div className="relative">
+              <div className="flex flex-1 justify-end">
                 <HamburgerButton onClick={() => setOpen(!open)} />
                 {open && (
-                  <ul className="absolute top-full left-1 m-0 w-32 p-0 h-32 bg-red-500 text-white rounded shadow-lg z-50 flex flex-col justify-center items-center">
+                  <ul className="absolute top-full right-0 m-0 w-32 p-0 h-32 bg-red-500 text-white rounded shadow-lg z-50 flex flex-col justify-center items-center">
                     <li>
                       <a
                         href="/"
