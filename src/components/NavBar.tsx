@@ -4,77 +4,44 @@ import "../index.css";
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
-  const apiKey = localStorage.getItem("apiKey"); // or sessionStorage
+  const apiKey = localStorage.getItem("apiKey"); 
   const [open, setOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   const handleLogout = () => {
     localStorage.removeItem("apiKey");
     navigate("/signin");
   };
 
-  type HamburgerButtonProps = {
-    onClick: React.MouseEventHandler<HTMLButtonElement>;
-  };
-
-  function HamburgerButton({ onClick }: HamburgerButtonProps) {
-    return (
-      <button
-        onClick={onClick}
-        className="flex flex-col justify-center items-center w-8 h-8 space-y-1.5"
-        aria-label="Toggle menu"
-      >
-        {/* <span className="block w-8 h-0.5 bg-gray-800 dark:bg-white rounded"></span>
-        <span className="block w-8 h-0.5 bg-gray-800 dark:bg-white rounded"></span>
-        <span className="block w-8 h-0.5 bg-gray-800 dark:bg-white rounded"></span> */}
-        <img src="/images/profileIcon.jpg" className="w-8"></img>
-      </button>
-    );
-  }
-
   return (
-    <nav className="sticky top-0 z-50 bg-white dark:bg-blue-950 border-b border-gray-200 dark:border-gray-700">
-      <div>
-        <div className="flex items-center">
-          <div className="flex flex-1 items-center gap-6">
-            <Link
-              to="/"
-              className="text-lg font-semibold !text-white dark:!text-white/70"
-            >
-              <span className="text-white text-lg font-semibold">
-                Health Care
-              </span>
-            </Link>
-          </div>
+    <nav className="sticky top-0 z-50 p-3 opacity-80 bg-white dark:bg-black">
+      <div className="flex items-center">
+        <div className="flex flex-2 items-center">
+          <Link to="/" className="text-lg font-semibold textColor opacity-100">
+            Health Care
+          </Link>
+        </div>
 
-          <div className="flex flex-1 items-center gap-4">
+        <div className="flex items-center gap-4">
+          {/* Regular links - shown on medium screens and up */}
+          <div className="hidden md:flex items-center gap-4">
             {apiKey && (
               <>
-                <div className="flex flex-1 justify-end">
-                  <Link
-                    to="/dashboard"
-                    className="text-sm text-gray-700 dark:text-gray-300 hover:underline"
-                  >
-                    Dashboard
-                  </Link>
-                </div>
-                <div className="flex flex-1 justify-end">
-                  <Link
-                    to="/add"
-                    className="text-sm text-gray-700 dark:text-gray-300 hover:underline"
-                  >
-                    Add Result
-                  </Link>
-                </div>
-                {/* <div className="flex flex-1">
-                  <Link
-                    to="/add"
-                    className="text-sm text-gray-700 dark:text-gray-300 hover:underline"
-                  >
-                    Profile
-                  </Link>
-                </div> */}
+                <Link
+                  to="/dashboard"
+                  className="text-sm text-gray-700 dark:text-gray-300 hover:underline"
+                >
+                  Dashboard
+                </Link>
+                <Link
+                  to="/add"
+                  className="text-sm text-gray-700 dark:text-gray-300 hover:underline"
+                >
+                  Add Result
+                </Link>
               </>
             )}
-            {!apiKey ? (
+
+            {!apiKey && (
               <>
                 <Link
                   to="/signin"
@@ -89,32 +56,119 @@ const Navbar: React.FC = () => {
                   Sign Up
                 </Link>
               </>
-            ) : (
-              <div className="flex flex-1 justify-end">
-                <HamburgerButton onClick={() => setOpen(!open)} />
-                {open && (
-                  <ul className="absolute top-full right-0 m-0 w-32 p-0 h-32 bg-red-500 text-white rounded shadow-lg z-50 flex flex-col justify-center items-center">
-                    <li>
-                      <a
-                        href="/"
-                        className="block px-4 py-2 hover:bg-red-600 rounded"
-                      >
-                        Home
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        href="/about"
-                        className="block px-4 py-2 hover:bg-red-600 rounded"
-                      >
-                        About
-                      </a>
-                    </li>
-                  </ul>
-                )}
-              </div>
             )}
           </div>
+
+          {/* Mobile menu button - shown on small screens */}
+          <div className="md:hidden">
+            <button
+              onClick={() => setOpen(!open)}
+              className="flex items-center justify-center w-8 h-8"
+              aria-label="Menu"
+            >
+              {/* Hamburger icon */}
+              <div className="space-y-1.5">
+                <span className="block w-6 h-0.5 bg-gray-800 dark:bg-white"></span>
+                <span className="block w-6 h-0.5 bg-gray-800 dark:bg-white"></span>
+                <span className="block w-6 h-0.5 bg-gray-800 dark:bg-white"></span>
+              </div>
+            </button>
+          </div>
+
+          {/* Profile dropdown - shown when logged in */}
+          {apiKey && (
+            <div className="hidden md:block">
+              <button
+                onClick={() => setProfileOpen(!profileOpen)}
+                className="flex items-center justify-center w-8 h-8"
+              >
+                <img
+                  src="/images/profileIcon.jpg"
+                  className="w-8 h-8 rounded-full"
+                  alt="Profile"
+                />
+              </button>
+
+              {profileOpen && (
+                <div className="absolute top-16 right-2 bg-white dark:bg-black rounded shadow-lg py-2 w-30 z-50">
+                  <Link
+                    to="/profile"
+                    className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    onClick={() => setOpen(false)}
+                  >
+                    Profile
+                  </Link>
+
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      setOpen(false);
+                    }}
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  >
+                    Log Out
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Mobile menu dropdown - shown when hamburger is clicked */}
+          {open && (
+            <div className="absolute top-16 right-4 md:hidden bg-white dark:bg-black rounded shadow-lg py-2 w-30 z-50">
+              {apiKey ? (
+                <>
+                  <Link
+                    to="/dashboard"
+                    className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    onClick={() => setOpen(false)}
+                  >
+                    Dashboard
+                  </Link>
+                  <Link
+                    to="/add"
+                    className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    onClick={() => setOpen(false)}
+                  >
+                    Add Result
+                  </Link>
+                  <Link
+                    to="/add"
+                    className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    onClick={() => setOpen(false)}
+                  >
+                    Profile
+                  </Link>
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      setOpen(false);
+                    }}
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                  >
+                    Log Out
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to="/signin"
+                    className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    onClick={() => setOpen(false)}
+                  >
+                    Sign In
+                  </Link>
+                  <Link
+                    to="/signup"
+                    className="block px-4 py-2 text-sm text-blue-600 dark:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    onClick={() => setOpen(false)}
+                  >
+                    Sign Up
+                  </Link>
+                </>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </nav>

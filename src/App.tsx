@@ -9,12 +9,14 @@ import AddResult from "./pages/AddResult";
 import ProfilePage from "./pages/Profile";
 
 import Navbar from "../src/components/NavBar";
+import Landing from "./pages/Landing";
+import './utils/chartConfig';
 
 const AppLayout = ({ children }: { children: JSX.Element }) => {
   return (
-   <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen">
       <Navbar />
-      <main className="flex-1 px-4 py-6">{children}</main>
+      <main className="flex-1">{children}</main>
     </div>
   );
 };
@@ -32,6 +34,14 @@ function App() {
         <Routes>
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
+          <Route
+            path="/landing"
+            element={
+              <AppLayout>
+                <Landing />
+              </AppLayout>
+            }
+          />
           <Route
             path="/dashboard"
             element={
@@ -62,7 +72,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="*" element={<Navigate to="/dashboard" />} />
+          <Route path="*" element={<Navigate to="/landing" />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
