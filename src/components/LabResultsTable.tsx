@@ -11,7 +11,7 @@ export default function LabResultsTable({ data }: LabResultsTableProps) {
   return (
     <div className="bg-white shadow rounded-lg overflow-hidden">
       <div className="px-6 py-4 border-b border-gray-200">
-        <h2 className="text-lg font-medium">Recent Lab Results</h2>
+        <h2 className="text-lg font-medium text-black">Recent Lab Results</h2>
       </div>
       
       <div className="overflow-x-auto">
@@ -40,7 +40,7 @@ export default function LabResultsTable({ data }: LabResultsTableProps) {
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {data.map((result) => (
-              <tr key={result.id}>
+              <tr key={result.userId}>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                   {formatDate(result.date)}
                 </td>

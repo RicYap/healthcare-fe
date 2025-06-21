@@ -38,9 +38,10 @@ export default function AddResult() {
     const dateObj = new Date(date); 
     const formattedDate = dateObj.toISOString(); 
 
+    const userId = localStorage.getItem("userId")
+
     const labInput: LabResult = {
-      id: "",
-      userId: "35616318-84ee-4c3d-b61a-38743369c999",
+      userId: userId,
       date: formattedDate,
       results: {
         glucose: parseFloat("98"),

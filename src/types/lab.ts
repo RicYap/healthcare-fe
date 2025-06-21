@@ -1,6 +1,5 @@
 interface LabResult {
-  id: string;
-  userId: string;
+  userId: string | null;
   date: string;
   results: {
     glucose: number;
@@ -16,6 +15,22 @@ interface LabResult {
   };
 }
 
-export type {
-    LabResult,
+interface LabResponse {
+  id: string;
+  userId: string | null;
+  date: string;
+  results: {
+    glucose: number;
+    cholesterol: {
+      total: number;
+      ldl: number;
+      hdl: number;
+    };
+    bloodPressure: {
+      systolic: number;
+      diastolic: number;
+    };
+  };
 }
+
+export type { LabResult, LabResponse };

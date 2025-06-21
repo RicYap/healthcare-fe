@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+.NavBarTextColor {
+  @apply text-gray-700 dark:text-gray-300;
+}
+
+.NavBarDropDownHover {
+  @apply hover:bg-gray-100 dark:hover:bg-gray-700;
+}

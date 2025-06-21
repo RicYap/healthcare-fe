@@ -8,7 +8,7 @@ export default function Signup() {
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [error, setError] = useState("");
-  const { setApiKey } = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -23,7 +23,7 @@ export default function Signup() {
         email,
         password,
       });
-      setApiKey(res.data.apiKey);
+      login(res.data.apiKey);
       navigate("/dashboard");
     } catch (err) {
       alert("Signup failed");

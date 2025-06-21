@@ -17,10 +17,10 @@ export default function SummaryCards({ data }: SummaryCardsProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
       {/* Blood Sugar Card */}
-      <div className="bg-gray-950 p-6 rounded-lg shadow">
+      <div className="bg-gray-50 dark:bg-gray-950 p-6 rounded-lg shadow">
         <div className="flex justify-between">
           <div>
-            <p className="text-sm text-gray-400">Blood Sugar</p>
+            <p className="text-sm textColor">Blood Sugar</p>
             <p className="text-2xl font-bold">
               {latestResult.results.glucose} mg/dL
             </p>
@@ -32,10 +32,10 @@ export default function SummaryCards({ data }: SummaryCardsProps) {
       </div>
 
       {/* Cholesterol Card */}
-      <div className="bg-gray-950 p-6 rounded-lg shadow">
+      <div className="bg-gray-50 dark:bg-gray-950 p-6 rounded-lg shadow">
         <div className="flex justify-between">
           <div>
-            <p className="text-sm text-gray-400">Cholesterol</p>
+            <p className="text-sm textColor">Cholesterol</p>
             <p className="text-2xl font-bold">
               {latestResult.results.cholesterol.total} mg/dL
             </p>
@@ -47,10 +47,10 @@ export default function SummaryCards({ data }: SummaryCardsProps) {
       </div>
 
       {/* Blood Pressure Card */}
-      <div className="bg-gray-950 p-6 rounded-lg shadow">
+      <div className="bg-gray-50 dark:bg-gray-950 p-6 rounded-lg shadow">
         <div className="flex justify-between">
           <div>
-            <p className="text-sm text-gray-400">Blood Pressure</p>
+            <p className="text-sm textColor">Blood Pressure</p>
             <p className="text-2xl font-bold">
               {latestResult.results.bloodPressure.systolic}/
               {latestResult.results.bloodPressure.diastolic} mmHg

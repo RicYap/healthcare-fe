@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import "../index.css";
 
 const Navbar: React.FC = () => {
@@ -7,16 +8,17 @@ const Navbar: React.FC = () => {
   const apiKey = localStorage.getItem("apiKey"); 
   const [open, setOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+   const { logout } = useAuth();
   const handleLogout = () => {
-    localStorage.removeItem("apiKey");
-    navigate("/signin");
+    logout();
+    navigate("/login");
   };
 
   return (
     <nav className="sticky top-0 z-50 p-3 opacity-80 bg-white dark:bg-black">
       <div className="flex items-center">
         <div className="flex flex-2 items-center">
-          <Link to="/" className="text-lg font-semibold textColor opacity-100">
+          <Link to="/" className="text-lg font-semibold NavBarTextColor opacity-100">
             Health Care
           </Link>
         </div>
@@ -28,13 +30,13 @@ const Navbar: React.FC = () => {
               <>
                 <Link
                   to="/dashboard"
-                  className="text-sm text-gray-700 dark:text-gray-300 hover:underline"
+                  className="text-sm NavBarTextColor hover:underline"
                 >
                   Dashboard
                 </Link>
                 <Link
-                  to="/add"
-                  className="text-sm text-gray-700 dark:text-gray-300 hover:underline"
+                  to="/add-result"
+                  className="text-sm NavBarTextColor hover:underline"
                 >
                   Add Result
                 </Link>
@@ -44,8 +46,8 @@ const Navbar: React.FC = () => {
             {!apiKey && (
               <>
                 <Link
-                  to="/signin"
-                  className="text-sm text-gray-600 dark:text-gray-300 hover:underline"
+                  to="/login"
+                  className="text-sm NavBarTextColor hover:underline"
                 >
                   Sign In
                 </Link>
@@ -93,7 +95,7 @@ const Navbar: React.FC = () => {
                 <div className="absolute top-16 right-2 bg-white dark:bg-black rounded shadow-lg py-2 w-30 z-50">
                   <Link
                     to="/profile"
-                    className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    className="block px-4 py-2 text-sm NavBarTextColor NavBarDropDownHover"
                     onClick={() => setOpen(false)}
                   >
                     Profile
@@ -104,7 +106,7 @@ const Navbar: React.FC = () => {
                       handleLogout();
                       setOpen(false);
                     }}
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    className="block w-full text-left px-4 py-2 text-sm NavBarTextColor NavBarDropDownHover"
                   >
                     Log Out
                   </button>
@@ -120,21 +122,21 @@ const Navbar: React.FC = () => {
                 <>
                   <Link
                     to="/dashboard"
-                    className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    className="block px-4 py-2 text-sm NavBarTextColor NavBarDropDownHover"
                     onClick={() => setOpen(false)}
                   >
                     Dashboard
                   </Link>
                   <Link
                     to="/add"
-                    className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    className="block px-4 py-2 text-sm NavBarTextColor NavBarDropDownHover"
                     onClick={() => setOpen(false)}
                   >
                     Add Result
                   </Link>
                   <Link
                     to="/add"
-                    className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    className="block px-4 py-2 text-sm NavBarTextColor NavBarDropDownHover"
                     onClick={() => setOpen(false)}
                   >
                     Profile
@@ -144,7 +146,7 @@ const Navbar: React.FC = () => {
                       handleLogout();
                       setOpen(false);
                     }}
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    className="block w-full text-left px-4 py-2 text-sm NavBarTextColor NavBarDropDownHover"
                   >
                     Log Out
                   </button>
@@ -152,15 +154,15 @@ const Navbar: React.FC = () => {
               ) : (
                 <>
                   <Link
-                    to="/signin"
-                    className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    to="/login"
+                    className="block px-4 py-2 text-sm NavBarTextColor NavBarDropDownHover"
                     onClick={() => setOpen(false)}
                   >
                     Sign In
                   </Link>
                   <Link
                     to="/signup"
-                    className="block px-4 py-2 text-sm text-blue-600 dark:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    className="block px-4 py-2 text-sm text-blue-600 dark:text-blue-400 NavBarDropDownHover"
                     onClick={() => setOpen(false)}
                   >
                     Sign Up

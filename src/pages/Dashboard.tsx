@@ -19,7 +19,7 @@ export default function Dashboard() {
     try {
       setLoading(true);
       const res = await api.getLabResult();
-
+      
       setLabResults(res.data);
     } catch (error) {
       console.error("Failed to load lab results:", error);
@@ -38,14 +38,14 @@ export default function Dashboard() {
   }, [debounceGetLabResult]);
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen bg-gray-200 dark:bg-gray-900">
       {loading ? (
         <div className="text-center py-8">
           <p>Loading...</p>
         </div>
       ) : labResults.length === 0 ? (
         <div className="text-center py-8">
-          <p>No lab results found. Add some results!</p>
+          <p>No lab results found. Add some results!</p>  
         </div>
       ) : (
         <main className="max-w-7xl mx-auto px-4 py-6">
@@ -65,7 +65,7 @@ export default function Dashboard() {
                 <option value="30days">Last 30 Days</option>
                 <option value="90days">Last 90 Days</option>
               </select>
-              <button className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+              <button className="bg-blue-600 textColor px-4 py-2 rounded-md hover:bg-blue-700">
                 + Add New Result
               </button>
             </div>

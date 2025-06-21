@@ -8,13 +8,14 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const { setApiKey } = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   async function signIn(email: string, password: string) {
     try {
       const res = await api.signIn(email, password);
-      setApiKey(res.data.token);
+      login(res.data.token);
+      localStorage.setItem("userId", res.data.userId)
       navigate("/dashboard");
     } catch (error) {
       alert("Login failed");
