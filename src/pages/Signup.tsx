@@ -1,7 +1,8 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React, { useCallback, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { debounce } from "lodash";
+import api from "../api/auth";
 
 export default function Signup() {
   const [email, setEmail] = useState("");
@@ -11,6 +12,18 @@ export default function Signup() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
+  async function signUp(email: string, password: string) {
+    try {
+      const res = await api.signIn(email, password);
+      login(res.data.apiKey);
+      navigate("/dashboard");
+    } catch (error) {
+      alert("Signup failed");
+    }
+  }
+
+  const debounceSignUp = useCallback(debounce(signUp, 400), []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -18,16 +31,7 @@ export default function Signup() {
       setError("Passwords do not match");
       return;
     }
-    try {
-      const res = await axios.post("http://localhost:8080/auth/signup", {
-        email,
-        password,
-      });
-      login(res.data.apiKey);
-      navigate("/dashboard");
-    } catch (err) {
-      alert("Signup failed");
-    }
+    debounceSignUp(email, password);
   };
 
   return (

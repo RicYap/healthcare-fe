@@ -15,7 +15,6 @@ export default function Login() {
     try {
       const res = await api.signIn(email, password);
       login(res.data.token);
-      localStorage.setItem("userId", res.data.userId)
       navigate("/dashboard");
     } catch (error) {
       setError("Login failed");
