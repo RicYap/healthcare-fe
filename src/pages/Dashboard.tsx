@@ -6,7 +6,7 @@ import GlucoseChart from "../components/charts/GlucoseChart";
 import CholesterolChart from "../components/charts/CholesterolChart";
 import BloodPressureChart from "../components/charts/BloodPressureChart";
 import api from "../api/lab";
-import { debounce } from "lodash";
+import { debounce, isNull } from "lodash";
 
 export default function Dashboard() {
   const [timeRange, setTimeRange] = useState<"7days" | "30days" | "90days">(
@@ -19,8 +19,9 @@ export default function Dashboard() {
     try {
       setLoading(true);
       const res = await api.getLabResult();
-      
-      setLabResults(res.data);
+      if (!isNull(res.data)) {
+        setLabResults(res.data);
+      }
     } catch (error) {
       console.error("Failed to load lab results:", error);
       alert("Failed to load lab results");
@@ -45,7 +46,7 @@ export default function Dashboard() {
         </div>
       ) : labResults.length === 0 ? (
         <div className="text-center py-8">
-          <p>No lab results found. Add some results!</p>  
+          <p>No lab results found. Add some results!</p>
         </div>
       ) : (
         <main className="max-w-7xl mx-auto px-4 py-6">
