@@ -18,7 +18,7 @@ export default function Login() {
       localStorage.setItem("userId", res.data.userId)
       navigate("/dashboard");
     } catch (error) {
-      alert("Login failed");
+      setError("Login failed");
     }
   }
 
