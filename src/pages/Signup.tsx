@@ -14,7 +14,7 @@ export default function Signup() {
 
   async function signUp(email: string, password: string) {
     try {
-      const res = await api.signIn(email, password);
+      const res = await api.signUp(email, password);
       login(res.data.apiKey);
       navigate("/dashboard");
     } catch (error) {

@@ -13,7 +13,7 @@ export default function Login() {
 
   async function signIn(email: string, password: string) {
     try {
-      const res = await api.signUp(email, password);
+      const res = await api.signIn(email, password);
       login(res.data.token);
       navigate("/dashboard");
     } catch (error) {
